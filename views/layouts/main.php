@@ -34,29 +34,56 @@ AppAsset::register($this);
             'class' => 'navbar navbar-expand-md navbar-dark  bg-danger fixed-top',
         ],
     ]);
+// Настройка навигации
+    $items = [];
+    if(Yii::$app->user->isGuest){
+        $items [] = ['label' => 'Регистрация', 'url' => ['/user/create']];
+        $items [] =  ['label' => 'Авторизация', 'url' => ['/site/login']];
+    }
+    else{
+        if(Yii::$app->user->identity->username == 'copp'){
+            $items [] =  ['label' => 'Админка', 'url' => ['/request/index']];
+        }
+        else{
+            $items [] =  ['label' => 'Заявления', 'url' => ['/request/index']];
+            $items [] =  ['label' => 'Формирование заявлений', 'url' => ['/request/create']];
+        }
+
+        $items [] = 
+                    '<li>'
+                    . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
+                    . Html::submitButton(
+                        'Logout (' . Yii::$app->user->identity->username . ')',
+                        ['class' => 'btn btn-link logout']
+                    )
+                    . Html::endForm()
+                    . '</li>';
+                    
+    }
+
 
 
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav'],
-       
-        'items' => [
+        'items' => $items,
+        // 'items' => [
          
-            ['label' => 'Регистрация', 'url' => ['/user/create']],
-            ['label' => 'Заявления', 'url' => ['/request/index']],
-            ['label' => 'Формирование заявлений', 'url' => ['/request/create']],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Авторизация', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
-        ],
+        //     ['label' => 'Регистрация', 'url' => ['/user/create']],
+        //     ['label' => 'Заявления', 'url' => ['/request/index']],
+        //     ['label' => 'Формирование заявлений', 'url' => ['/request/create']],
+        //     Yii::$app->user->isGuest ? (
+        //         ['label' => 'Авторизация', 'url' => ['/site/login']]
+        //     ) : (
+        //         '<li>'
+        //         . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
+        //         . Html::submitButton(
+        //             'Logout (' . Yii::$app->user->identity->username . ')',
+        //             ['class' => 'btn btn-link logout']
+        //         )
+        //         . Html::endForm()
+        //         . '</li>'
+        //     )
+        // ],
     ]);
     NavBar::end();
     ?>
