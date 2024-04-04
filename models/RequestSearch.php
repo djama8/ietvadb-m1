@@ -42,7 +42,10 @@ class RequestSearch extends Request
     public function search($params)
     {
         $query = Request::find();
-
+//Если пользователь не админ он может видеть только свои заявления
+        if(Yii::$app->user->identity->username != 'copp'){
+            $query->andWhere(['id_user'=>Yii::$app->user->id]);
+        }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
